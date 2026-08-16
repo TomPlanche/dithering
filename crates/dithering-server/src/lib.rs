@@ -1,18 +1,21 @@
-//! HTTP backend over the core dithering pipeline. No routes yet.
+//! HTTP backend over the core dithering pipeline.
+//!
+//! One stateless job: take an uploaded photo, run it through [`dithering_core`], and hand back a dithered PNG. Nothing
+//! is stored between requests.
+//!
+//! | Route | What it does |
+//! | --- | --- |
+//! | `GET /health` | Liveness probe. |
+//! | `GET /api/options` | Defaults, accepted values, the palette. |
+//! | `POST /api/dither` | Dithered PNG. |
+//!
+//! The binary is a thin wrapper: read [`Config`](config::Config) from the environment, build [`routes::router`], serve
+//! it.
 
-/// Placeholder until the routes land. Proves the workspace dependency is wired.
-pub fn hello() -> String {
-    let (width, height) = dithering_core::DEFAULT_SIZE;
+pub mod config;
+pub mod error;
+pub mod params;
+pub mod routes;
 
-    format!("Hello, world! from dithering-server, core dithers at {width}x{height}")
-}
-
-#[cfg(test)]
-mod tests {
-    use super::hello;
-
-    #[test]
-    fn hello_reaches_the_core() {
-        assert!(hello().contains("600x400"));
-    }
-}
+pub use config::Config;
+pub use routes::router;

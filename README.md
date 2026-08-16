@@ -18,7 +18,7 @@ Dithers photos to a fixed palette of six colors with Floyd-Steinberg error diffu
 | Crate | What it does |
 | --- | --- |
 | `dithering-core` | The pipeline, and a command line front end for it. |
-| `dithering-server` | HTTP backend. A placeholder for now. |
+| `dithering-server` | HTTP backend over the pipeline. |
 
 ## Command line
 
@@ -37,6 +37,29 @@ cargo run -p dithering-core -- photo.jpg --preset instagram-story --crop --keep-
 ```
 
 `--preset` picks a shape. `--size` picks how many pixels the pipeline dithers. `--crop` takes the sides off instead of stretching the photo into the target. `--keep-orientation` turns the target over for a portrait photo. `--help` lists the rest.
+
+## Server
+
+```sh
+cargo run -p dithering-server
+```
+
+It listens on `127.0.0.1:3000` and stores nothing between requests.
+
+| Route | What it does |
+| --- | --- |
+| `GET /health` | Liveness probe. |
+| `GET /api/options` | Defaults, accepted values, the palette. |
+| `POST /api/dither` | A dithered PNG. |
+
+Send the photo as the raw body, or as a `multipart/form-data` field named `image`. The settings ride in the query string under the same names `GET /api/options` reports, so a client can send the reported defaults straight back. The response carries `x-image-size` and `x-crop-rect`, which say what the pipeline landed on and which part of the upload it read.
+
+```sh
+curl -X POST --data-binary @photo.jpg \
+  'localhost:3000/api/dither?preset=instagram-story&crop=true&keep_orientation=true' -o out.png
+```
+
+`HOST`, `PORT`, `CORS_ORIGINS` and `MAX_UPLOAD_BYTES` configure it. Every one has a default.
 
 ## Library
 
