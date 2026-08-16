@@ -155,7 +155,7 @@ pub struct DitherParams {
     /// Blend between the pure and the muted palettes, 0.0 to 1.0.
     ///
     /// This names the six colours the photo lands on. It does not touch the photo, which is `color`.
-    pub saturation: f64,
+    pub palette_blend: f64,
     /// Gain applied to the photo before dithering, 0.0 to 5.0. `1.0` leaves it alone.
     pub brightness: f64,
     /// How far the photo's pixels are pushed away from grey before dithering, 0.0 to 5.0.
@@ -204,7 +204,7 @@ impl Default for DitherParams {
         let defaults = DitherOptions::default();
 
         Self {
-            saturation: defaults.saturation,
+            palette_blend: defaults.palette_blend,
             brightness: defaults.brightness,
             color: defaults.color,
             width: dithering_core::DEFAULT_SIZE.0,
@@ -224,10 +224,10 @@ impl Default for DitherParams {
 impl DitherParams {
     /// Checks the ranges and builds the pipeline's own options struct.
     pub fn to_options(self) -> Result<DitherOptions, ApiError> {
-        if !self.saturation.is_finite() || !(0.0..=1.0).contains(&self.saturation) {
+        if !self.palette_blend.is_finite() || !(0.0..=1.0).contains(&self.palette_blend) {
             return Err(ApiError::bad_request(format!(
-                "saturation must be between 0.0 and 1.0, got {}",
-                self.saturation
+                "palette_blend must be between 0.0 and 1.0, got {}",
+                self.palette_blend
             )));
         }
 
@@ -275,7 +275,7 @@ impl DitherParams {
         }
 
         Ok(DitherOptions {
-            saturation: self.saturation,
+            palette_blend: self.palette_blend,
             brightness: self.brightness,
             color: self.color,
         })
@@ -391,11 +391,11 @@ mod tests {
     fn out_of_range_values_are_refused() {
         let bad = [
             DitherParams {
-                saturation: 1.5,
+                palette_blend: 1.5,
                 ..Default::default()
             },
             DitherParams {
-                saturation: f64::NAN,
+                palette_blend: f64::NAN,
                 ..Default::default()
             },
             DitherParams {

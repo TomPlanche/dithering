@@ -87,7 +87,7 @@ struct Config {
     size: (u32, u32),
     preset: Option<(&'static str, (u32, u32))>,
     fit: FitOptions,
-    saturation: f64,
+    palette_blend: f64,
     upscale: u32,
     format: Format,
 }
@@ -119,8 +119,8 @@ impl Config {
         let defaults = DitherOptions::default();
         let _ = write!(
             out,
-            " saturation={} brightness={} color={} format={:?}",
-            self.saturation, defaults.brightness, defaults.color, self.format
+            " palette_blend={} brightness={} color={} format={:?}",
+            self.palette_blend, defaults.brightness, defaults.color, self.format
         );
         out.to_lowercase()
     }
@@ -129,7 +129,7 @@ impl Config {
     fn run(&self, photo: &RgbImage) -> usize {
         let working = resize::resize_to_fit(photo, self.target(), self.fit);
         let options = DitherOptions {
-            saturation: self.saturation,
+            palette_blend: self.palette_blend,
             ..Default::default()
         };
         let dithered = apply_dithering(&working, &options).scale_nearest(self.upscale);
@@ -154,7 +154,7 @@ fn configs() -> Vec<Config> {
             size: WORKING,
             preset: None,
             fit: FitOptions::default(),
-            saturation: 0.6,
+            palette_blend: 0.6,
             upscale: 1,
             format: Format::Indexed,
         },
@@ -163,7 +163,7 @@ fn configs() -> Vec<Config> {
             size: WORKING,
             preset: None,
             fit: crop_center,
-            saturation: 0.6,
+            palette_blend: 0.6,
             upscale: 1,
             format: Format::Indexed,
         },
@@ -177,7 +177,7 @@ fn configs() -> Vec<Config> {
                 crop_zoom: 2.0,
                 ..Default::default()
             },
-            saturation: 0.6,
+            palette_blend: 0.6,
             upscale: 1,
             format: Format::Indexed,
         },
@@ -190,7 +190,7 @@ fn configs() -> Vec<Config> {
                 crop: true,
                 ..Default::default()
             },
-            saturation: 0.6,
+            palette_blend: 0.6,
             upscale: 1,
             format: Format::Indexed,
         },
@@ -199,7 +199,7 @@ fn configs() -> Vec<Config> {
             size: (1200, 800),
             preset: None,
             fit: crop_center,
-            saturation: 0.6,
+            palette_blend: 0.6,
             upscale: 1,
             format: Format::Indexed,
         },
@@ -208,7 +208,7 @@ fn configs() -> Vec<Config> {
             size: WORKING,
             preset: None,
             fit: FitOptions::default(),
-            saturation: 0.6,
+            palette_blend: 0.6,
             upscale: 2,
             format: Format::Rgb,
         },

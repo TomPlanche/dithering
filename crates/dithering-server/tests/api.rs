@@ -143,14 +143,14 @@ async fn options_reports_the_defaults_and_the_palette() {
     let json: serde_json::Value = serde_json::from_slice(&body_bytes(response).await).expect("options is JSON");
     assert_eq!(json["defaults"]["width"], 600);
     assert_eq!(json["defaults"]["height"], 400);
-    assert_eq!(json["defaults"]["saturation"], 0.6);
+    assert_eq!(json["defaults"]["palette_blend"], 0.6);
     assert_eq!(json["defaults"]["brightness"], 1.1);
     assert_eq!(json["defaults"]["color"], 1.4);
     assert_eq!(json["defaults"]["format"], "indexed");
     assert_eq!(json["default_size"], serde_json::json!([600, 400]));
     assert_eq!(json["presets"][0]["name"], "instagram-post");
 
-    // Six slots, blended at the default saturation, ready for CSS.
+    // Six slots, blended at the default amount, ready for CSS.
     let palette = json["palette"].as_array().expect("the palette is a list");
     assert_eq!(palette.len(), 6);
     assert_eq!(palette[1], "#ffffff");
@@ -296,7 +296,7 @@ async fn scale_upsizes_the_result_with_nearest_neighbour() {
 #[tokio::test]
 async fn a_bad_query_string_comes_back_as_json() {
     let cases = [
-        ("/api/dither?saturation=2", "saturation"),
+        ("/api/dither?palette_blend=2", "palette_blend"),
         ("/api/dither?brightness=9", "brightness"),
         ("/api/dither?color=-1", "color"),
         ("/api/dither?width=0", "width"),

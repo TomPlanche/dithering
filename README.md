@@ -38,7 +38,7 @@ cargo run -p dithering-core -- photo.jpg --preset instagram-story --crop --keep-
 
 `--preset` picks a shape. `--size` picks how many pixels the pipeline dithers. `--crop` takes the sides off instead of stretching the photo into the target. `--keep-orientation` turns the target over for a portrait photo. `--help` lists the rest.
 
-Three settings decide how the result looks. `--saturation` names the six colours, between pure primaries at 0.0 and muted ink at 1.0. `--brightness` and `--color` work on the photo before it reaches them: a gain on every channel, and a push away from each pixel's own grey. Both sit above 1.0 by default, because six colours cannot hold a midtone. `--brightness 1.0 --color 1.0` hands the photo to the dither untouched.
+Three settings decide how the result looks. `--palette-blend` names the six colours, between pure primaries at 0.0 and muted ink at 1.0. `--brightness` and `--color` work on the photo before it reaches them: a gain on every channel, and a push away from each pixel's own grey. Both sit above 1.0 by default, because six colours cannot hold a midtone. `--brightness 1.0 --color 1.0` hands the photo to the dither untouched.
 
 ## Server
 

@@ -15,7 +15,7 @@ pub struct DitherOptions {
     /// How far the palette is blended toward its muted end. See [`crate::palette::palette_blend`].
     ///
     /// This names the six colours the photo lands on. It does not touch the photo, which is [`Self::color`].
-    pub saturation: f64,
+    pub palette_blend: f64,
     /// Gain applied to the photo before dithering. See [`adjust::brightness`].
     pub brightness: f64,
     /// How far the photo's pixels are pushed away from grey before dithering. See [`adjust::color`].
@@ -26,7 +26,7 @@ impl Default for DitherOptions {
     /// The boosts are on by default, because six colours cannot hold a midtone and a flat photo dithers to mud.
     fn default() -> Self {
         Self {
-            saturation: 0.6,
+            palette_blend: 0.6,
             brightness: 1.1,
             color: 1.4,
         }
@@ -50,7 +50,7 @@ pub fn apply_dithering(image: &RgbImage, options: &DitherOptions) -> IndexedImag
         Cow::Owned(work)
     };
 
-    let palette = Palette::new(options.saturation);
+    let palette = Palette::new(options.palette_blend);
     let indices = diffusion::diffuse(&work, &palette);
 
     IndexedImage::new(indices, palette)
@@ -66,9 +66,9 @@ mod tests {
     }
 
     /// The pipeline with both boosts off, which is the photo as it arrived.
-    fn plain(saturation: f64) -> DitherOptions {
+    fn plain(blend: f64) -> DitherOptions {
         DitherOptions {
-            saturation,
+            palette_blend: blend,
             brightness: 1.0,
             color: 1.0,
         }
@@ -100,7 +100,7 @@ mod tests {
     }
 
     #[test]
-    fn saturation_picks_the_palette_the_output_expands_through() {
+    fn the_blend_picks_the_palette_the_output_expands_through() {
         let image = solid(4, 4, [255, 0, 0]);
         let pure = apply_dithering(&image, &plain(0.0));
         let muted = apply_dithering(&image, &plain(1.0));

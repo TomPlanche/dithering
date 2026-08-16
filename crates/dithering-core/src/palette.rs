@@ -1,7 +1,7 @@
 //! The fixed palette everything is reduced to.
 //!
-//! Six colours, each blended between a pure primary and a muted version of it. The blend is what `saturation` picks,
-//! and the nearest-colour search over the result is what the dithering stage quantises through.
+//! Six colours, each blended between a pure primary and a muted version of it. How far the blend goes is what
+//! `palette_blend` picks, and the nearest-colour search over the result is what the dithering stage quantises through.
 
 /// Number of colours in the palette.
 pub const PALETTE_COLORS: usize = 6;
@@ -36,14 +36,14 @@ pub const PALETTE_ORDER: [usize; PALETTE_COLORS] = [0, 1, 5, 4, 3, 2];
 ///
 /// At `0.0` the result is [`PURE_PALETTE`], at `1.0` it is [`MUTED_PALETTE`]. Anything outside that range is clamped
 /// into it, since there is no colour past either end.
-pub fn palette_blend(saturation: f64) -> [[u8; 3]; PALETTE_COLORS] {
-    let saturation = saturation.clamp(0.0, 1.0);
+pub fn palette_blend(blend: f64) -> [[u8; 3]; PALETTE_COLORS] {
+    let blend = blend.clamp(0.0, 1.0);
     let mut out = [[0u8; 3]; PALETTE_COLORS];
 
     for (slot, &src) in PALETTE_ORDER.iter().enumerate() {
         for channel in 0..3 {
-            let muted = MUTED_PALETTE[src][channel] as f64 * saturation;
-            let pure = PURE_PALETTE[src][channel] as f64 * (1.0 - saturation);
+            let muted = MUTED_PALETTE[src][channel] as f64 * blend;
+            let pure = PURE_PALETTE[src][channel] as f64 * (1.0 - blend);
             out[slot][channel] = (muted + pure) as u8;
         }
     }
@@ -58,10 +58,10 @@ pub struct Palette {
 }
 
 impl Palette {
-    /// Builds the palette for a given saturation.
-    pub fn new(saturation: f64) -> Self {
+    /// Builds the palette at a given blend.
+    pub fn new(blend: f64) -> Self {
         Self {
-            colors: palette_blend(saturation),
+            colors: palette_blend(blend),
         }
     }
 
@@ -140,7 +140,7 @@ mod tests {
     }
 
     #[test]
-    fn saturation_outside_the_range_is_clamped() {
+    fn a_blend_outside_the_range_is_clamped() {
         assert_eq!(palette_blend(-2.0), palette_blend(0.0));
         assert_eq!(palette_blend(7.5), palette_blend(1.0));
     }

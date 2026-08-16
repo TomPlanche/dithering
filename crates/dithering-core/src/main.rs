@@ -36,8 +36,8 @@ struct Cli {
     output: Option<PathBuf>,
 
     /// Blend between the pure and the muted palettes, 0.0 to 1.0. Names the colours, does not touch the photo.
-    #[arg(long, default_value_t = 0.6, value_name = "F", value_parser = parse_saturation)]
-    saturation: f64,
+    #[arg(long, default_value_t = 0.6, value_name = "F", value_parser = parse_palette_blend)]
+    palette_blend: f64,
 
     /// Gain applied to the photo before dithering. 1.0 leaves it alone.
     #[arg(long, default_value_t = 1.1, value_name = "F", value_parser = parse_boost)]
@@ -117,17 +117,17 @@ fn parse_size(raw: &str) -> Result<(u32, u32), String> {
 }
 
 /// The palette blend, which is a position between the two palettes rather than a multiplier.
-fn parse_saturation(raw: &str) -> Result<f64, String> {
-    let saturation: f64 = raw
+fn parse_palette_blend(raw: &str) -> Result<f64, String> {
+    let blend: f64 = raw
         .trim()
         .parse()
         .map_err(|_| format!("expected a number, got `{raw}`"))?;
 
-    if !(0.0..=1.0).contains(&saturation) {
-        return Err(format!("expected 0.0 to 1.0, got {saturation}"));
+    if !(0.0..=1.0).contains(&blend) {
+        return Err(format!("expected 0.0 to 1.0, got {blend}"));
     }
 
-    Ok(saturation)
+    Ok(blend)
 }
 
 /// A boost applied to the photo, which is a multiplier rather than a position between two ends.
@@ -173,7 +173,7 @@ fn parse_zoom(raw: &str) -> Result<f32, String> {
 impl Cli {
     fn dither_options(&self) -> DitherOptions {
         DitherOptions {
-            saturation: self.saturation,
+            palette_blend: self.palette_blend,
             brightness: self.brightness,
             color: self.color,
         }
@@ -405,7 +405,7 @@ mod tests {
 
     #[test]
     fn out_of_range_numbers_are_refused() {
-        assert!(Cli::try_parse_from(["dithering-core", "p.jpg", "--saturation", "1.5"]).is_err());
+        assert!(Cli::try_parse_from(["dithering-core", "p.jpg", "--palette-blend", "1.5"]).is_err());
         assert!(Cli::try_parse_from(["dithering-core", "p.jpg", "--resize", "0"]).is_err());
         assert!(Cli::try_parse_from(["dithering-core", "p.jpg", "--crop", "--crop-zoom", "0.5"]).is_err());
         assert!(Cli::try_parse_from(["dithering-core", "p.jpg", "--size", "600x0"]).is_err());

@@ -50,7 +50,7 @@ pub async fn dither(params: Params, request: Request) -> Result<Response, ApiErr
 /// `defaults` uses the same names as the query string, so a client can feed it straight into `URLSearchParams`.
 pub async fn options(State(config): State<Arc<Config>>) -> Json<OptionsBody> {
     let defaults = DitherParams::default();
-    let palette = Palette::new(defaults.saturation);
+    let palette = Palette::new(defaults.palette_blend);
 
     Json(OptionsBody {
         formats: [Format::Indexed, Format::Rgb],
@@ -82,7 +82,7 @@ pub struct OptionsBody {
     limits: Limits,
     /// The working size a request lands on when it names neither `width` nor `height`.
     default_size: (u32, u32),
-    /// The palette at the default saturation, as `#rrggbb`, in slot order.
+    /// The palette at the default blend, as `#rrggbb`, in slot order.
     palette: Vec<String>,
 }
 
