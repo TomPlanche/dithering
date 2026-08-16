@@ -18,6 +18,7 @@ use std::path::PathBuf;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use dithering_core::{CropOrigin, DitherOptions, FitOptions, IndexedImage, RgbImage, apply_dithering, io, resize};
+use rayon::prelude::*;
 
 /// The size the pipeline dithers at unless a case says otherwise.
 const WORKING: (u32, u32) = resize::DEFAULT_SIZE;
@@ -236,6 +237,18 @@ impl Case {
     }
 }
 
+/// The whole photo set under one case, timed as a single unit.
+///
+/// This is what the CLI spends on `dithering-core assets/*.jpg`. It exists next to the per-photo cases because the
+/// batch loop is where whole photos run in parallel, which per-photo timings cannot show.
+struct Batch {
+    name: &'static str,
+    options: String,
+    best: Duration,
+    median: Duration,
+    bytes: usize,
+}
+
 /// Keeps the optimiser from deleting a stage whose result is otherwise unused.
 #[inline]
 fn keep<T>(value: T) -> T {
@@ -292,6 +305,57 @@ fn measure(
     }
 }
 
+/// Times `body` over the whole set: `warmup` untimed passes, then `reps` timed ones.
+fn measure_batch(
+    name: &'static str,
+    options: impl Into<String>,
+    warmup: usize,
+    reps: usize,
+    mut body: impl FnMut() -> usize,
+) -> Batch {
+    for _ in 0..warmup {
+        keep(body());
+    }
+
+    let mut passes = Vec::with_capacity(reps);
+    let mut bytes = 0;
+    for _ in 0..reps {
+        let started = Instant::now();
+        let produced = body();
+        passes.push(started.elapsed());
+        bytes = keep(produced);
+    }
+    passes.sort_unstable();
+
+    Batch {
+        name,
+        options: options.into(),
+        best: passes[0],
+        median: passes[passes.len() / 2],
+        bytes,
+    }
+}
+
+/// Decode included, since a batch starts at the file.
+fn full_run(config: &Config, asset: &Asset) -> usize {
+    config.run(&io::decode_rgb(&asset.bytes).expect("decodable"))
+}
+
+/// The batch loop, run the way the CLI runs it and the way it used to.
+fn measure_batches(assets: &[Asset]) -> Vec<Batch> {
+    let config = configs().remove(0);
+    let options = format!("decode..encode, {}", config.options());
+
+    vec![
+        measure_batch("sequential", &options, 1, 3, || {
+            assets.iter().map(|asset| full_run(&config, asset)).sum()
+        }),
+        measure_batch("parallel, one photo per core", &options, 1, 3, || {
+            assets.par_iter().map(|asset| full_run(&config, asset)).sum()
+        }),
+    ]
+}
+
 fn measure_all(assets: &[Asset]) -> Vec<Case> {
     let options = DitherOptions::default();
     let fit = FitOptions::default();
@@ -342,7 +406,7 @@ fn measure_all(assets: &[Asset]) -> Vec<Case> {
 }
 
 /// The stdout report: one line per case, then the per-photo detail.
-fn report(assets: &[Asset], cases: &[Case]) -> String {
+fn report(assets: &[Asset], cases: &[Case], batches: &[Batch]) -> String {
     let count = assets.len() as f64;
     let mut out = String::new();
 
@@ -366,6 +430,19 @@ fn report(assets: &[Asset], cases: &[Case]) -> String {
             ms(case.total()),
             ms(case.total()) / count,
             bytes,
+        )
+        .unwrap();
+    }
+
+    for batch in batches {
+        writeln!(
+            out,
+            "{:<10} {:<26} {:>11.1} {:>11.2} {:>11.1}",
+            "batch",
+            batch.name,
+            ms(batch.best),
+            ms(batch.best) / count,
+            batch.bytes as f64 / 1024.0,
         )
         .unwrap();
     }
@@ -419,7 +496,7 @@ fn json_string(raw: &str) -> String {
 }
 
 /// The export, written by hand so the bench keeps no dependencies of its own.
-fn json(assets: &[Asset], cases: &[Case], label: &str) -> String {
+fn json(assets: &[Asset], cases: &[Case], batches: &[Batch], label: &str) -> String {
     let seconds = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map(|d| d.as_secs())
@@ -483,6 +560,22 @@ fn json(assets: &[Asset], cases: &[Case], label: &str) -> String {
         writeln!(out, "      ]").unwrap();
         writeln!(out, "    }}{comma}").unwrap();
     }
+    writeln!(out, "  ],").unwrap();
+
+    writeln!(out, "  \"batches\": [").unwrap();
+    for (i, batch) in batches.iter().enumerate() {
+        let comma = if i + 1 == batches.len() { "" } else { "," };
+        writeln!(
+            out,
+            "    {{\"name\": {}, \"options\": {}, \"best_ms\": {:.3}, \"median_ms\": {:.3}, \"output_bytes\": {}}}{comma}",
+            json_string(batch.name),
+            json_string(&batch.options),
+            ms(batch.best),
+            ms(batch.median),
+            batch.bytes,
+        )
+        .unwrap();
+    }
     writeln!(out, "  ]").unwrap();
     writeln!(out, "}}").unwrap();
 
@@ -505,13 +598,14 @@ fn main() {
     println!();
 
     let cases = measure_all(&assets);
-    print!("{}", report(&assets, &cases));
+    let batches = measure_batches(&assets);
+    print!("{}", report(&assets, &cases, &batches));
 
     let label = std::env::var("BENCH_LABEL").unwrap_or_else(|_| "latest".to_string());
     let dir = repo_root().join("benchmarks");
     fs::create_dir_all(&dir).expect("the benchmarks directory is writable");
     let path = dir.join(format!("{label}.json"));
-    fs::write(&path, json(&assets, &cases, &label)).expect("the report is writable");
+    fs::write(&path, json(&assets, &cases, &batches, &label)).expect("the report is writable");
     let shown = fs::canonicalize(&path).unwrap_or(path);
 
     println!();

@@ -75,6 +75,8 @@ cargo bench -p dithering-core
 
 The bench times every photo in `assets/`, stage by stage and under six option sets. It writes `benchmarks/latest.json`. Give the run another name with `BENCH_LABEL`. Compare a later run against `benchmarks/baseline.json` to see what a change did.
 
+[BENCHMARKS.md](BENCHMARKS.md) logs what each change did to the numbers.
+
 ## Credits
 
 The photos in `assets/` come from [Pexels](https://www.pexels.com).

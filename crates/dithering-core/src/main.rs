@@ -10,6 +10,7 @@ use std::time::Instant;
 use clap::builder::TypedValueParser;
 use clap::{Parser, ValueEnum};
 use dithering_core::{CropOrigin, DitherOptions, FitOptions, MAX_CROP_ZOOM, RgbImage, apply_dithering, io, resize};
+use rayon::prelude::*;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
 enum FormatArg {
@@ -202,6 +203,9 @@ impl Cli {
 }
 
 /// Runs the pipeline for one input and returns what should be printed for it.
+///
+/// The report is returned rather than printed because inputs are processed in parallel, and interleaved lines would be
+/// unreadable.
 fn process(cli: &Cli, input: &Path) -> Result<String, Box<dyn Error>> {
     let started = Instant::now();
     let photo = io::load_rgb(input)?;
@@ -273,12 +277,21 @@ fn process(cli: &Cli, input: &Path) -> Result<String, Box<dyn Error>> {
 fn main() -> ExitCode {
     let cli = Cli::parse();
 
+    // Decoding dominates a batch and is single-threaded per photo, so a batch is fastest with one photo per core.
+    // `map` over an indexed parallel iterator keeps the results in input order, so the output does not depend on which
+    // thread happened to finish first.
+    let reports: Vec<Result<String, String>> = cli
+        .inputs
+        .par_iter()
+        .map(|input| process(&cli, input).map_err(|e| format!("error: {}: {e}", input.display())))
+        .collect();
+
     let mut failed = 0usize;
-    for input in &cli.inputs {
-        match process(&cli, input) {
-            Ok(report) => println!("{report}"),
-            Err(e) => {
-                eprintln!("error: {}: {e}", input.display());
+    for report in reports {
+        match report {
+            Ok(text) => println!("{text}"),
+            Err(text) => {
+                eprintln!("{text}");
                 failed += 1;
             },
         }

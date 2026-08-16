@@ -22,6 +22,11 @@ pub const DIVISOR: i32 = 16;
 ///
 /// The error buffer covers the whole image rather than just the two rows the kernel can still reach. Keeping only the
 /// live rows means addressing them as a ring, and the per-tap cost of that outweighs the locality it buys.
+///
+/// This stage stays sequential while the rest of the pipeline spreads over the cores. Every pixel reads error that the
+/// pixel before it wrote, so rows can only overlap as a wavefront, one row starting once the row above is two pixels
+/// ahead. That needs a synchronisation point per row, and at the sizes here the stage is already the cheap one. The
+/// cores go to the batch loop instead, where whole photos are independent.
 pub fn diffuse(image: &RgbImage, palette: &Palette) -> GrayImage {
     let (width, height) = image.dimensions();
     let mut spill = vec![[0f32; 3]; (width as usize) * (height as usize)];

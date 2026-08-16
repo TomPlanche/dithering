@@ -29,6 +29,8 @@ cli = ["image-io", "dep:clap"]
 [dependencies]
 # Buffers, resampling and colour indexing. The codecs come with `image-io`.
 image = { version = "0.25", default-features = false }
+# Row-level parallelism in the hot stages, and the CLI's batch loop.
+rayon = "1.11"
 # Palette PNG output, which `image` cannot write.
 png = { version = "0.18", optional = true }
 clap = { version = "4", features = ["derive"], optional = true }

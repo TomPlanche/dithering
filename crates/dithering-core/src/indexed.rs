@@ -2,8 +2,8 @@
 //!
 //! Pixels are [`image::GrayImage`] values reinterpreted as palette slots.
 
-use image::imageops::{self, FilterType};
 use image::{GrayImage, RgbImage};
+use rayon::prelude::*;
 
 use crate::palette::Palette;
 
@@ -42,29 +42,57 @@ impl IndexedImage {
     }
 
     /// Expands the slots back into a full RGB image.
+    ///
+    /// One output row per source row, and the rows do not depend on each other, so they run in parallel.
     pub fn to_rgb(&self) -> RgbImage {
         let colors = self.palette.colors();
+        let (width, height) = self.size();
+        if width == 0 || height == 0 {
+            return RgbImage::new(width, height);
+        }
 
-        RgbImage::from_fn(self.width(), self.height(), |x, y| {
-            image::Rgb(colors[self.indices.get_pixel(x, y).0[0] as usize])
-        })
+        let slots = self.indices.as_raw();
+        let stride = width as usize;
+        let mut out = vec![0u8; stride * (height as usize) * 3];
+
+        out.par_chunks_mut(stride * 3)
+            .zip(slots.par_chunks(stride))
+            .for_each(|(row, slots)| {
+                for (cell, &slot) in row.chunks_exact_mut(3).zip(slots) {
+                    cell.copy_from_slice(&colors[slot as usize]);
+                }
+            });
+
+        RgbImage::from_raw(width, height, out).expect("buffer matches the dimensions")
     }
 
     /// Nearest-neighbour integer upscale, which keeps the dither pattern crisp rather than smearing it.
     ///
     /// A factor of 1 or 0 hands the image back as it is.
+    ///
+    /// Written out rather than left to `imageops::resize`: an integer factor is plain replication, so an output row is
+    /// a source row with every byte repeated, and the rows run in parallel.
     pub fn scale_nearest(&self, factor: u32) -> IndexedImage {
-        if factor <= 1 {
+        let (width, height) = self.size();
+        if factor <= 1 || width == 0 || height == 0 {
             return self.clone();
         }
 
+        let f = factor as usize;
+        let src_stride = width as usize;
+        let out_stride = src_stride * f;
+        let mut out = vec![0u8; out_stride * (height as usize) * f];
+        let slots = self.indices.as_raw();
+
+        out.par_chunks_mut(out_stride).enumerate().for_each(|(y, row)| {
+            let source = &slots[(y / f) * src_stride..(y / f) * src_stride + src_stride];
+            for (cell, &slot) in row.chunks_exact_mut(f).zip(source) {
+                cell.fill(slot);
+            }
+        });
+
         IndexedImage {
-            indices: imageops::resize(
-                &self.indices,
-                self.width() * factor,
-                self.height() * factor,
-                FilterType::Nearest,
-            ),
+            indices: GrayImage::from_raw(width * factor, height * factor, out).expect("buffer matches the dimensions"),
             palette: self.palette.clone(),
         }
     }

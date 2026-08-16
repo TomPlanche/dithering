@@ -5,6 +5,7 @@ use std::str::FromStr;
 
 use image::RgbImage;
 use image::imageops::{self, FilterType};
+use rayon::prelude::*;
 
 /// The landscape size the pipeline dithers at unless told otherwise.
 pub const DEFAULT_SIZE: (u32, u32) = (600, 400);
@@ -383,6 +384,9 @@ fn prefilter_factor(source: (u32, u32), target: (u32, u32)) -> u32 {
 ///
 /// The region is read in place. A crop is only ever an offset and a shorter row here, so it never costs the copy that
 /// materialising the sub-image would.
+///
+/// Output rows are independent and each reads a disjoint band of the source, so they run in parallel. This is the
+/// stage that reads every source pixel, which is why it is the one worth spreading.
 fn box_reduce(image: &RgbImage, rect: (u32, u32, u32, u32), factor: u32) -> RgbImage {
     let (x0, y0, width, height) = rect;
     let f = factor as usize;
@@ -397,7 +401,7 @@ fn box_reduce(image: &RgbImage, rect: (u32, u32, u32, u32), factor: u32) -> RgbI
     let half = count / 2;
 
     let mut out = vec![0u8; out_w * out_h * 3];
-    for (y, row) in out.chunks_exact_mut(out_w * 3).enumerate() {
+    out.par_chunks_mut(out_w * 3).enumerate().for_each(|(y, row)| {
         let block_top = origin + y * f * src_stride;
 
         for (x, cell) in row.chunks_exact_mut(3).enumerate() {
@@ -418,7 +422,7 @@ fn box_reduce(image: &RgbImage, rect: (u32, u32, u32, u32), factor: u32) -> RgbI
             cell[1] = ((acc[1] + half) / count) as u8;
             cell[2] = ((acc[2] + half) / count) as u8;
         }
-    }
+    });
 
     RgbImage::from_raw(out_w as u32, out_h as u32, out).expect("buffer matches the dimensions")
 }
