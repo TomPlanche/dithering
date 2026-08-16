@@ -2,10 +2,9 @@
 
 /// Placeholder until the routes land. Proves the workspace dependency is wired.
 pub fn hello() -> String {
-    format!(
-        "Hello, world! from dithering-server, core says: {}",
-        dithering_core::hello()
-    )
+    let (width, height) = dithering_core::DEFAULT_SIZE;
+
+    format!("Hello, world! from dithering-server, core dithers at {width}x{height}")
 }
 
 #[cfg(test)]
@@ -14,6 +13,6 @@ mod tests {
 
     #[test]
     fn hello_reaches_the_core() {
-        assert!(hello().contains("dithering-core"));
+        assert!(hello().contains("600x400"));
     }
 }

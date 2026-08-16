@@ -8,7 +8,7 @@ edition = "2024"
 license = "MIT"
 
 [workspace.dependencies]
-dithering-core = { path = "crates/dithering-core" }
+dithering-core = { path = "crates/dithering-core", default-features = false }
 
 [profile.release]
 opt-level = 3

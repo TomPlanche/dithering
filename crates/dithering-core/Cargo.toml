@@ -12,5 +12,18 @@ path = "src/lib.rs"
 [[bin]]
 name = "dithering-core"
 path = "src/main.rs"
+required-features = ["cli"]
+
+[features]
+default = ["cli"]
+# Image decoding and palette PNG encoding.
+image-io = ["dep:png", "image/jpeg", "image/png"]
+# The command line front end.
+cli = ["image-io", "dep:clap"]
 
 [dependencies]
+# Buffers, resampling and colour indexing. The codecs come with `image-io`.
+image = { version = "0.25", default-features = false }
+# Palette PNG output, which `image` cannot write.
+png = { version = "0.18", optional = true }
+clap = { version = "4", features = ["derive"], optional = true }
