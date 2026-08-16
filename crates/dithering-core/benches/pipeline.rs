@@ -116,7 +116,12 @@ impl Config {
         if self.upscale > 1 {
             let _ = write!(out, " upscale={}x", self.upscale);
         }
-        let _ = write!(out, " saturation={} format={:?}", self.saturation, self.format);
+        let defaults = DitherOptions::default();
+        let _ = write!(
+            out,
+            " saturation={} brightness={} color={} format={:?}",
+            self.saturation, defaults.brightness, defaults.color, self.format
+        );
         out.to_lowercase()
     }
 
@@ -125,6 +130,7 @@ impl Config {
         let working = resize::resize_to_fit(photo, self.target(), self.fit);
         let options = DitherOptions {
             saturation: self.saturation,
+            ..Default::default()
         };
         let dithered = apply_dithering(&working, &options).scale_nearest(self.upscale);
 

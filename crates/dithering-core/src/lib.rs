@@ -8,6 +8,7 @@
 //! Both ends are `image` types: an [`RgbImage`] goes in, an [`IndexedImage`] comes out. Decoding and encoding are the
 //! caller's.
 
+pub mod adjust;
 pub mod diffusion;
 pub mod dither;
 pub mod indexed;

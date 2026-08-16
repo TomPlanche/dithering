@@ -10,6 +10,9 @@ use std::time::Instant;
 use clap::builder::TypedValueParser;
 use clap::{Parser, ValueEnum};
 use dithering_core::{CropOrigin, DitherOptions, FitOptions, MAX_CROP_ZOOM, RgbImage, apply_dithering, io, resize};
+
+/// Largest boost `--brightness` and `--color` accept. Past this the photo is a flat block of primaries.
+const MAX_BOOST: f64 = 5.0;
 use rayon::prelude::*;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
@@ -32,9 +35,17 @@ struct Cli {
     #[arg(short, long, value_name = "PATH")]
     output: Option<PathBuf>,
 
-    /// Blend between the pure and the muted palettes, 0.0 to 1.0.
+    /// Blend between the pure and the muted palettes, 0.0 to 1.0. Names the colours, does not touch the photo.
     #[arg(long, default_value_t = 0.6, value_name = "F", value_parser = parse_saturation)]
     saturation: f64,
+
+    /// Gain applied to the photo before dithering. 1.0 leaves it alone.
+    #[arg(long, default_value_t = 1.1, value_name = "F", value_parser = parse_boost)]
+    brightness: f64,
+
+    /// Pushes the photo's pixels away from grey before dithering. 1.0 leaves it alone, 0.0 leaves it grey.
+    #[arg(long, default_value_t = 1.4, value_name = "F", value_parser = parse_boost)]
+    color: f64,
 
     /// Working size, as WIDTHxHEIGHT. With --preset it is the box the ratio is fitted inside.
     #[arg(long, default_value = "600x400", value_name = "WxH", value_parser = parse_size)]
@@ -119,6 +130,18 @@ fn parse_saturation(raw: &str) -> Result<f64, String> {
     Ok(saturation)
 }
 
+/// A boost applied to the photo, which is a multiplier rather than a position between two ends.
+fn parse_boost(raw: &str) -> Result<f64, String> {
+    let factor: f64 = raw
+        .trim()
+        .parse()
+        .map_err(|_| format!("expected a number, got `{raw}`"))?;
+    if !factor.is_finite() || !(0.0..=MAX_BOOST).contains(&factor) {
+        return Err(format!("expected 0.0 to {MAX_BOOST}, got {factor}"));
+    }
+    Ok(factor)
+}
+
 /// The resize fraction, which is a part of the photo's own size rather than a size of its own.
 fn parse_factor(raw: &str) -> Result<f64, String> {
     let factor: f64 = raw
@@ -151,6 +174,8 @@ impl Cli {
     fn dither_options(&self) -> DitherOptions {
         DitherOptions {
             saturation: self.saturation,
+            brightness: self.brightness,
+            color: self.color,
         }
     }
 

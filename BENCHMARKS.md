@@ -45,6 +45,7 @@ Two cautions:
 | --- | --- | ---: | ---: | ---: | ---: |
 | 2026-08-16 | Baseline, no parallelism | 199.1 | not measured | not measured | 502.1 KiB |
 | 2026-08-16 | 1. rayon in the hot stages and the batch loop | 128.4 | 132.6 | 0.13 s | 502.1 KiB |
+| 2026-08-16 | 2. Brightness and colour boosts before the dither | 126.4 | 121.7 | 0.13 s | 366.8 KiB |
 
 ## History
 
@@ -111,6 +112,27 @@ What did not move, and why:
 - **Decode**, 341 ms and still the most expensive stage. The JPEG decoder in `image` is single threaded, and one photo cannot be split across cores. Only the batch loop attacks this, which is why the batch gains 3.85x while the stage gains nothing.
 - **Floyd-Steinberg**, 55.7 ms. Every pixel reads error that the pixel before it wrote. Rows can overlap only as a wavefront, one row starting once the row above is two pixels ahead. That needs a synchronization point per row, and this is already the cheap stage. The cores go to the batch loop instead. This is also why the `1200x800` case gains the least: at 0.96 MP the dither becomes the dominant stage.
 - **PNG encoding**, 29.3 ms. The `png` crate encodes on one thread.
+
+### 2026-08-16: brightness and colour boosts before the dither
+
+File: `benchmarks/boosts.json`.
+
+Not an optimization. `apply_dithering` gained two passes over the working image, a gain on every channel and a push away from each pixel's own grey, both on by default at 1.1 and 1.4. The entry is here because it moved the numbers, in both directions.
+
+| Group | Case | Before (ms) | After (ms) | Delta |
+| --- | --- | ---: | ---: | ---: |
+| stage | dither | 55.7 | 57.8 | +3.8% |
+| stage | encode indexed png | 29.3 | 23.2 | **-20.8%** |
+| stage | encode rgb png | 15.3 | 12.9 | -15.9% |
+| pipeline | default | 128.4 | 126.4 | -1.5% |
+| pipeline | 1200x800 | 495.3 | 476.7 | -3.7% |
+| batch | parallel, one photo per core | 132.6 | 121.7 | -8.2% |
+
+The two passes cost the dither stage 2 ms over the batch. The encode gets 6 ms back, so the pipeline ends up faster than it was without them.
+
+The reason is the output, not the code. A boosted photo lands more of its pixels on the same slot, because the boosts push colours toward the palette's own corners rather than leaving them in the midtones the dither has to scatter. The indexed PNG went from 502.1 KiB to 366.8 KiB for the same ten photos, which is 27% off, and deflate has less to do.
+
+The result changed on purpose, so nothing here is byte-reproducible against entry 1. `--brightness 1.0 --color 1.0` restores the old output exactly, and takes the boosts back out of the pipeline: `apply_dithering` borrows the photo instead of copying it when both factors are 1.0.
 
 ## Adding an entry
 

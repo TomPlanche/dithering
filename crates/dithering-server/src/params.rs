@@ -15,6 +15,8 @@ use crate::error::ApiError;
 pub const MAX_DIMENSION: u32 = 4096;
 /// Largest nearest-neighbour upscale factor.
 pub const MAX_SCALE: u32 = 4;
+/// Largest `brightness` or `color` boost. Past this the photo is a flat block of primaries.
+pub const MAX_BOOST: f64 = 5.0;
 /// Largest source image accepted, as a guard against decompression bombs.
 pub const MAX_SOURCE_PIXELS: u64 = 50_000_000;
 
@@ -151,7 +153,16 @@ pub enum Format {
 #[serde(default, deny_unknown_fields)]
 pub struct DitherParams {
     /// Blend between the pure and the muted palettes, 0.0 to 1.0.
+    ///
+    /// This names the six colours the photo lands on. It does not touch the photo, which is `color`.
     pub saturation: f64,
+    /// Gain applied to the photo before dithering, 0.0 to 5.0. `1.0` leaves it alone.
+    pub brightness: f64,
+    /// How far the photo's pixels are pushed away from grey before dithering, 0.0 to 5.0.
+    ///
+    /// `1.0` leaves the photo alone and `0.0` leaves it grey. Above 1.0 the channels are pushed apart, which is what
+    /// gives a palette of six colours something to work with.
+    pub color: f64,
     /// Working width, used unless `resize` is false. A `preset` reshapes it rather than replacing it.
     pub width: u32,
     /// Working height, used unless `resize` is false. A `preset` reshapes it rather than replacing it.
@@ -194,6 +205,8 @@ impl Default for DitherParams {
 
         Self {
             saturation: defaults.saturation,
+            brightness: defaults.brightness,
+            color: defaults.color,
             width: dithering_core::DEFAULT_SIZE.0,
             height: dithering_core::DEFAULT_SIZE.1,
             preset: None,
@@ -217,6 +230,9 @@ impl DitherParams {
                 self.saturation
             )));
         }
+
+        boost("brightness", self.brightness)?;
+        boost("color", self.color)?;
 
         dimension("width", self.width)?;
         dimension("height", self.height)?;
@@ -260,6 +276,8 @@ impl DitherParams {
 
         Ok(DitherOptions {
             saturation: self.saturation,
+            brightness: self.brightness,
+            color: self.color,
         })
     }
 
@@ -338,6 +356,15 @@ impl<S: Send + Sync> FromRequestParts<S> for Params {
 
         Ok(Params(params))
     }
+}
+
+fn boost(name: &str, value: f64) -> Result<(), ApiError> {
+    if !value.is_finite() || !(0.0..=MAX_BOOST).contains(&value) {
+        return Err(ApiError::bad_request(format!(
+            "{name} must be between 0.0 and {MAX_BOOST}, got {value}"
+        )));
+    }
+    Ok(())
 }
 
 fn dimension(name: &str, value: u32) -> Result<(), ApiError> {

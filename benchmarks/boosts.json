@@ -1,0 +1,236 @@
+{
+  "label": "boosts",
+  "generated_unix": 1786902220,
+  "os": "macos",
+  "arch": "aarch64",
+  "threads": 12,
+  "profile": "release",
+  "working_size": [600, 400],
+  "photos": [
+    {"name": "pexels-juju-649563-29285223.jpg", "width": 3456, "height": 5184, "file_bytes": 1771590},
+    {"name": "pexels-mark-theunissen-2157442753-34724738.jpg", "width": 3340, "height": 2222, "file_bytes": 660779},
+    {"name": "pexels-matreding-18111222.jpg", "width": 3272, "height": 4907, "file_bytes": 2101557},
+    {"name": "pexels-miguel-cuenca-67882473-18192938.jpg", "width": 8256, "height": 5504, "file_bytes": 2364498},
+    {"name": "pexels-thales13-33322524.jpg", "width": 5636, "height": 3757, "file_bytes": 659250},
+    {"name": "pexels-thales13-34089445.jpg", "width": 4398, "height": 2474, "file_bytes": 406565},
+    {"name": "pexels-thales13-34098891.jpg", "width": 4504, "height": 2534, "file_bytes": 354807},
+    {"name": "pexels-thales13-34121305.jpg", "width": 3849, "height": 2566, "file_bytes": 282471},
+    {"name": "pexels-tibodif-34624696.jpg", "width": 5253, "height": 3502, "file_bytes": 347357},
+    {"name": "pexels-tibodif-34624903.jpg", "width": 5254, "height": 3503, "file_bytes": 697222}
+  ],
+  "cases": [
+    {
+      "group": "stage",
+      "name": "decode jpeg",
+      "options": "",
+      "batch_best_ms": 337.886,
+      "output_bytes": null,
+      "photos": [
+        {"name": "pexels-juju-649563-29285223.jpg", "best_ms": 47.059, "median_ms": 47.152, "output_bytes": null},
+        {"name": "pexels-mark-theunissen-2157442753-34724738.jpg", "best_ms": 18.421, "median_ms": 18.520, "output_bytes": null},
+        {"name": "pexels-matreding-18111222.jpg", "best_ms": 44.155, "median_ms": 44.227, "output_bytes": null},
+        {"name": "pexels-miguel-cuenca-67882473-18192938.jpg", "best_ms": 92.904, "median_ms": 92.944, "output_bytes": null},
+        {"name": "pexels-thales13-33322524.jpg", "best_ms": 32.510, "median_ms": 32.610, "output_bytes": null},
+        {"name": "pexels-thales13-34089445.jpg", "best_ms": 17.380, "median_ms": 17.505, "output_bytes": null},
+        {"name": "pexels-thales13-34098891.jpg", "best_ms": 14.079, "median_ms": 14.127, "output_bytes": null},
+        {"name": "pexels-thales13-34121305.jpg", "best_ms": 12.899, "median_ms": 13.022, "output_bytes": null},
+        {"name": "pexels-tibodif-34624696.jpg", "best_ms": 24.233, "median_ms": 24.317, "output_bytes": null},
+        {"name": "pexels-tibodif-34624903.jpg", "best_ms": 34.247, "median_ms": 34.429, "output_bytes": null}
+      ]
+    },
+    {
+      "group": "stage",
+      "name": "resize",
+      "options": "600x400",
+      "batch_best_ms": 43.135,
+      "output_bytes": null,
+      "photos": [
+        {"name": "pexels-juju-649563-29285223.jpg", "best_ms": 5.625, "median_ms": 5.643, "output_bytes": null},
+        {"name": "pexels-mark-theunissen-2157442753-34724738.jpg", "best_ms": 3.661, "median_ms": 3.768, "output_bytes": null},
+        {"name": "pexels-matreding-18111222.jpg", "best_ms": 5.275, "median_ms": 5.312, "output_bytes": null},
+        {"name": "pexels-miguel-cuenca-67882473-18192938.jpg", "best_ms": 5.194, "median_ms": 5.289, "output_bytes": null},
+        {"name": "pexels-thales13-33322524.jpg", "best_ms": 3.919, "median_ms": 4.025, "output_bytes": null},
+        {"name": "pexels-thales13-34089445.jpg", "best_ms": 4.029, "median_ms": 4.153, "output_bytes": null},
+        {"name": "pexels-thales13-34098891.jpg", "best_ms": 4.126, "median_ms": 4.238, "output_bytes": null},
+        {"name": "pexels-thales13-34121305.jpg", "best_ms": 3.621, "median_ms": 3.675, "output_bytes": null},
+        {"name": "pexels-tibodif-34624696.jpg", "best_ms": 3.867, "median_ms": 3.931, "output_bytes": null},
+        {"name": "pexels-tibodif-34624903.jpg", "best_ms": 3.818, "median_ms": 4.125, "output_bytes": null}
+      ]
+    },
+    {
+      "group": "stage",
+      "name": "dither",
+      "options": "600x400",
+      "batch_best_ms": 57.766,
+      "output_bytes": null,
+      "photos": [
+        {"name": "pexels-juju-649563-29285223.jpg", "best_ms": 5.915, "median_ms": 5.955, "output_bytes": null},
+        {"name": "pexels-mark-theunissen-2157442753-34724738.jpg", "best_ms": 5.874, "median_ms": 5.906, "output_bytes": null},
+        {"name": "pexels-matreding-18111222.jpg", "best_ms": 5.892, "median_ms": 5.933, "output_bytes": null},
+        {"name": "pexels-miguel-cuenca-67882473-18192938.jpg", "best_ms": 5.725, "median_ms": 5.768, "output_bytes": null},
+        {"name": "pexels-thales13-33322524.jpg", "best_ms": 5.814, "median_ms": 5.902, "output_bytes": null},
+        {"name": "pexels-thales13-34089445.jpg", "best_ms": 5.039, "median_ms": 5.085, "output_bytes": null},
+        {"name": "pexels-thales13-34098891.jpg", "best_ms": 5.882, "median_ms": 5.921, "output_bytes": null},
+        {"name": "pexels-thales13-34121305.jpg", "best_ms": 5.900, "median_ms": 5.914, "output_bytes": null},
+        {"name": "pexels-tibodif-34624696.jpg", "best_ms": 5.867, "median_ms": 5.899, "output_bytes": null},
+        {"name": "pexels-tibodif-34624903.jpg", "best_ms": 5.859, "median_ms": 5.917, "output_bytes": null}
+      ]
+    },
+    {
+      "group": "stage",
+      "name": "encode indexed png",
+      "options": "600x400",
+      "batch_best_ms": 23.158,
+      "output_bytes": 375637,
+      "photos": [
+        {"name": "pexels-juju-649563-29285223.jpg", "best_ms": 1.770, "median_ms": 1.812, "output_bytes": 22234},
+        {"name": "pexels-mark-theunissen-2157442753-34724738.jpg", "best_ms": 3.143, "median_ms": 3.206, "output_bytes": 58814},
+        {"name": "pexels-matreding-18111222.jpg", "best_ms": 2.754, "median_ms": 2.785, "output_bytes": 45001},
+        {"name": "pexels-miguel-cuenca-67882473-18192938.jpg", "best_ms": 2.206, "median_ms": 2.227, "output_bytes": 36244},
+        {"name": "pexels-thales13-33322524.jpg", "best_ms": 2.490, "median_ms": 2.504, "output_bytes": 40719},
+        {"name": "pexels-thales13-34089445.jpg", "best_ms": 0.863, "median_ms": 0.881, "output_bytes": 15183},
+        {"name": "pexels-thales13-34098891.jpg", "best_ms": 2.075, "median_ms": 2.093, "output_bytes": 32940},
+        {"name": "pexels-thales13-34121305.jpg", "best_ms": 2.553, "median_ms": 2.599, "output_bytes": 43554},
+        {"name": "pexels-tibodif-34624696.jpg", "best_ms": 2.781, "median_ms": 2.830, "output_bytes": 44703},
+        {"name": "pexels-tibodif-34624903.jpg", "best_ms": 2.522, "median_ms": 2.545, "output_bytes": 36245}
+      ]
+    },
+    {
+      "group": "stage",
+      "name": "encode rgb png",
+      "options": "600x400",
+      "batch_best_ms": 12.852,
+      "output_bytes": 3969609,
+      "photos": [
+        {"name": "pexels-juju-649563-29285223.jpg", "best_ms": 1.293, "median_ms": 1.311, "output_bytes": 371668},
+        {"name": "pexels-mark-theunissen-2157442753-34724738.jpg", "best_ms": 1.397, "median_ms": 1.432, "output_bytes": 636129},
+        {"name": "pexels-matreding-18111222.jpg", "best_ms": 1.481, "median_ms": 1.483, "output_bytes": 442582},
+        {"name": "pexels-miguel-cuenca-67882473-18192938.jpg", "best_ms": 1.166, "median_ms": 1.205, "output_bytes": 276636},
+        {"name": "pexels-thales13-33322524.jpg", "best_ms": 1.324, "median_ms": 1.335, "output_bytes": 315262},
+        {"name": "pexels-thales13-34089445.jpg", "best_ms": 0.455, "median_ms": 0.466, "output_bytes": 113223},
+        {"name": "pexels-thales13-34098891.jpg", "best_ms": 1.329, "median_ms": 1.338, "output_bytes": 434513},
+        {"name": "pexels-thales13-34121305.jpg", "best_ms": 1.482, "median_ms": 1.501, "output_bytes": 452406},
+        {"name": "pexels-tibodif-34624696.jpg", "best_ms": 1.479, "median_ms": 1.493, "output_bytes": 531692},
+        {"name": "pexels-tibodif-34624903.jpg", "best_ms": 1.445, "median_ms": 1.483, "output_bytes": 395498}
+      ]
+    },
+    {
+      "group": "pipeline",
+      "name": "default",
+      "options": "size=600x400 saturation=0.6 brightness=1.1 color=1.4 format=indexed",
+      "batch_best_ms": 126.433,
+      "output_bytes": 375637,
+      "photos": [
+        {"name": "pexels-juju-649563-29285223.jpg", "best_ms": 13.345, "median_ms": 13.346, "output_bytes": 22234},
+        {"name": "pexels-mark-theunissen-2157442753-34724738.jpg", "best_ms": 12.966, "median_ms": 12.979, "output_bytes": 58814},
+        {"name": "pexels-matreding-18111222.jpg", "best_ms": 13.898, "median_ms": 14.096, "output_bytes": 45001},
+        {"name": "pexels-miguel-cuenca-67882473-18192938.jpg", "best_ms": 13.329, "median_ms": 13.381, "output_bytes": 36244},
+        {"name": "pexels-thales13-33322524.jpg", "best_ms": 12.214, "median_ms": 12.473, "output_bytes": 40719},
+        {"name": "pexels-thales13-34089445.jpg", "best_ms": 10.045, "median_ms": 10.085, "output_bytes": 15183},
+        {"name": "pexels-thales13-34098891.jpg", "best_ms": 13.188, "median_ms": 13.682, "output_bytes": 32940},
+        {"name": "pexels-thales13-34121305.jpg", "best_ms": 12.424, "median_ms": 13.211, "output_bytes": 43554},
+        {"name": "pexels-tibodif-34624696.jpg", "best_ms": 12.778, "median_ms": 12.793, "output_bytes": 44703},
+        {"name": "pexels-tibodif-34624903.jpg", "best_ms": 12.247, "median_ms": 12.558, "output_bytes": 36245}
+      ]
+    },
+    {
+      "group": "pipeline",
+      "name": "crop center",
+      "options": "size=600x400 crop=center zoom=1 saturation=0.6 brightness=1.1 color=1.4 format=indexed",
+      "batch_best_ms": 122.200,
+      "output_bytes": 381060,
+      "photos": [
+        {"name": "pexels-juju-649563-29285223.jpg", "best_ms": 11.776, "median_ms": 11.924, "output_bytes": 22796},
+        {"name": "pexels-mark-theunissen-2157442753-34724738.jpg", "best_ms": 12.905, "median_ms": 12.949, "output_bytes": 58918},
+        {"name": "pexels-matreding-18111222.jpg", "best_ms": 12.326, "median_ms": 12.418, "output_bytes": 46295},
+        {"name": "pexels-miguel-cuenca-67882473-18192938.jpg", "best_ms": 13.589, "median_ms": 14.078, "output_bytes": 36244},
+        {"name": "pexels-thales13-33322524.jpg", "best_ms": 12.519, "median_ms": 12.648, "output_bytes": 40719},
+        {"name": "pexels-thales13-34089445.jpg", "best_ms": 9.878, "median_ms": 9.945, "output_bytes": 17069},
+        {"name": "pexels-thales13-34098891.jpg", "best_ms": 11.802, "median_ms": 11.812, "output_bytes": 34517},
+        {"name": "pexels-thales13-34121305.jpg", "best_ms": 12.318, "median_ms": 12.442, "output_bytes": 43554},
+        {"name": "pexels-tibodif-34624696.jpg", "best_ms": 12.650, "median_ms": 12.687, "output_bytes": 44703},
+        {"name": "pexels-tibodif-34624903.jpg", "best_ms": 12.437, "median_ms": 12.523, "output_bytes": 36245}
+      ]
+    },
+    {
+      "group": "pipeline",
+      "name": "crop top, zoom 2",
+      "options": "size=600x400 crop=top zoom=2 saturation=0.6 brightness=1.1 color=1.4 format=indexed",
+      "batch_best_ms": 120.315,
+      "output_bytes": 375917,
+      "photos": [
+        {"name": "pexels-juju-649563-29285223.jpg", "best_ms": 11.935, "median_ms": 11.961, "output_bytes": 19819},
+        {"name": "pexels-mark-theunissen-2157442753-34724738.jpg", "best_ms": 13.268, "median_ms": 13.295, "output_bytes": 59621},
+        {"name": "pexels-matreding-18111222.jpg", "best_ms": 13.184, "median_ms": 13.348, "output_bytes": 44149},
+        {"name": "pexels-miguel-cuenca-67882473-18192938.jpg", "best_ms": 12.504, "median_ms": 12.561, "output_bytes": 32397},
+        {"name": "pexels-thales13-33322524.jpg", "best_ms": 12.308, "median_ms": 12.392, "output_bytes": 39660},
+        {"name": "pexels-thales13-34089445.jpg", "best_ms": 8.782, "median_ms": 8.879, "output_bytes": 12818},
+        {"name": "pexels-thales13-34098891.jpg", "best_ms": 11.944, "median_ms": 12.083, "output_bytes": 39822},
+        {"name": "pexels-thales13-34121305.jpg", "best_ms": 11.982, "median_ms": 12.018, "output_bytes": 46064},
+        {"name": "pexels-tibodif-34624696.jpg", "best_ms": 12.465, "median_ms": 12.529, "output_bytes": 45761},
+        {"name": "pexels-tibodif-34624903.jpg", "best_ms": 11.943, "median_ms": 12.044, "output_bytes": 35806}
+      ]
+    },
+    {
+      "group": "pipeline",
+      "name": "instagram story, upright",
+      "options": "size=600x400 preset=instagram-story keep-orientation crop=center zoom=1 saturation=0.6 brightness=1.1 color=1.4 format=indexed",
+      "batch_best_ms": 103.645,
+      "output_bytes": 326507,
+      "photos": [
+        {"name": "pexels-juju-649563-29285223.jpg", "best_ms": 9.959, "median_ms": 10.054, "output_bytes": 19792},
+        {"name": "pexels-mark-theunissen-2157442753-34724738.jpg", "best_ms": 10.859, "median_ms": 11.014, "output_bytes": 49577},
+        {"name": "pexels-matreding-18111222.jpg", "best_ms": 10.611, "median_ms": 10.629, "output_bytes": 39683},
+        {"name": "pexels-miguel-cuenca-67882473-18192938.jpg", "best_ms": 11.518, "median_ms": 11.783, "output_bytes": 33116},
+        {"name": "pexels-thales13-33322524.jpg", "best_ms": 10.584, "median_ms": 10.729, "output_bytes": 35907},
+        {"name": "pexels-thales13-34089445.jpg", "best_ms": 8.391, "median_ms": 8.598, "output_bytes": 13028},
+        {"name": "pexels-thales13-34098891.jpg", "best_ms": 10.202, "median_ms": 10.261, "output_bytes": 27663},
+        {"name": "pexels-thales13-34121305.jpg", "best_ms": 10.360, "median_ms": 10.375, "output_bytes": 37714},
+        {"name": "pexels-tibodif-34624696.jpg", "best_ms": 10.605, "median_ms": 10.784, "output_bytes": 38914},
+        {"name": "pexels-tibodif-34624903.jpg", "best_ms": 10.556, "median_ms": 10.895, "output_bytes": 31113}
+      ]
+    },
+    {
+      "group": "pipeline",
+      "name": "1200x800",
+      "options": "size=1200x800 crop=center zoom=1 saturation=0.6 brightness=1.1 color=1.4 format=indexed",
+      "batch_best_ms": 476.718,
+      "output_bytes": 1424876,
+      "photos": [
+        {"name": "pexels-juju-649563-29285223.jpg", "best_ms": 47.275, "median_ms": 47.882, "output_bytes": 81895},
+        {"name": "pexels-mark-theunissen-2157442753-34724738.jpg", "best_ms": 52.399, "median_ms": 52.580, "output_bytes": 229134},
+        {"name": "pexels-matreding-18111222.jpg", "best_ms": 50.120, "median_ms": 50.228, "output_bytes": 175229},
+        {"name": "pexels-miguel-cuenca-67882473-18192938.jpg", "best_ms": 48.734, "median_ms": 48.869, "output_bytes": 131049},
+        {"name": "pexels-thales13-33322524.jpg", "best_ms": 50.300, "median_ms": 50.584, "output_bytes": 150618},
+        {"name": "pexels-thales13-34089445.jpg", "best_ms": 38.052, "median_ms": 38.357, "output_bytes": 59563},
+        {"name": "pexels-thales13-34098891.jpg", "best_ms": 45.879, "median_ms": 46.085, "output_bytes": 125085},
+        {"name": "pexels-thales13-34121305.jpg", "best_ms": 47.302, "median_ms": 47.439, "output_bytes": 164353},
+        {"name": "pexels-tibodif-34624696.jpg", "best_ms": 48.922, "median_ms": 49.424, "output_bytes": 175047},
+        {"name": "pexels-tibodif-34624903.jpg", "best_ms": 47.735, "median_ms": 47.756, "output_bytes": 132903}
+      ]
+    },
+    {
+      "group": "pipeline",
+      "name": "upscale 2x, rgb png",
+      "options": "size=600x400 upscale=2x saturation=0.6 brightness=1.1 color=1.4 format=rgb",
+      "batch_best_ms": 134.715,
+      "output_bytes": 5349723,
+      "photos": [
+        {"name": "pexels-juju-649563-29285223.jpg", "best_ms": 14.972, "median_ms": 15.047, "output_bytes": 536797},
+        {"name": "pexels-mark-theunissen-2157442753-34724738.jpg", "best_ms": 13.360, "median_ms": 13.482, "output_bytes": 832464},
+        {"name": "pexels-matreding-18111222.jpg", "best_ms": 14.663, "median_ms": 14.697, "output_bytes": 562925},
+        {"name": "pexels-miguel-cuenca-67882473-18192938.jpg", "best_ms": 13.944, "median_ms": 14.014, "output_bytes": 347115},
+        {"name": "pexels-thales13-33322524.jpg", "best_ms": 12.880, "median_ms": 12.990, "output_bytes": 375228},
+        {"name": "pexels-thales13-34089445.jpg", "best_ms": 11.029, "median_ms": 11.183, "output_bytes": 151246},
+        {"name": "pexels-thales13-34098891.jpg", "best_ms": 13.472, "median_ms": 13.503, "output_bytes": 617954},
+        {"name": "pexels-thales13-34121305.jpg", "best_ms": 13.255, "median_ms": 13.323, "output_bytes": 644744},
+        {"name": "pexels-tibodif-34624696.jpg", "best_ms": 13.650, "median_ms": 13.824, "output_bytes": 698079},
+        {"name": "pexels-tibodif-34624903.jpg", "best_ms": 13.490, "median_ms": 13.517, "output_bytes": 583171}
+      ]
+    }
+  ],
+  "batches": [
+    {"name": "sequential", "options": "decode..encode, size=600x400 saturation=0.6 brightness=1.1 color=1.4 format=indexed", "best_ms": 478.061, "median_ms": 486.094, "output_bytes": 375637},
+    {"name": "parallel, one photo per core", "options": "decode..encode, size=600x400 saturation=0.6 brightness=1.1 color=1.4 format=indexed", "best_ms": 121.663, "median_ms": 125.851, "output_bytes": 375637}
+  ]
+}
