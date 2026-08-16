@@ -1,0 +1,16 @@
+[package]
+name = "dithering-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Dithering pipeline"
+
+[lib]
+name = "dithering_core"
+path = "src/lib.rs"
+
+[[bin]]
+name = "dithering-core"
+path = "src/main.rs"
+
+[dependencies]

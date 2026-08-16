@@ -1,0 +1,17 @@
+[package]
+name = "dithering-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "HTTP backend exposing the core dithering pipeline"
+
+[lib]
+name = "dithering_server"
+path = "src/lib.rs"
+
+[[bin]]
+name = "dithering-server"
+path = "src/main.rs"
+
+[dependencies]
+dithering-core = { workspace = true }
