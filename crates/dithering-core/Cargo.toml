@@ -14,6 +14,11 @@ name = "dithering-core"
 path = "src/main.rs"
 required-features = ["cli"]
 
+[[bench]]
+name = "pipeline"
+harness = false
+required-features = ["image-io"]
+
 [features]
 default = ["cli"]
 # Image decoding and palette PNG encoding.
